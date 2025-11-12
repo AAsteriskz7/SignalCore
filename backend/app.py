@@ -23,7 +23,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from backend.pipeline import SignalCorePipeline
 from backend.llm_client import LLMClient
-from backend.utils import inject_needle
+
 
 
 # Initialize Flask app
@@ -63,9 +63,7 @@ def test_naive():
     Test Naive RAG approach with full unprocessed document.
     
     Request JSON:
-        - haystack: The full document text
-        - needle: The fact to inject
-        - injection_depth: Percentage (0-100) where to inject needle
+        - document: The full document text
         - query: The question to ask the LLM
     
     Response JSON:
@@ -75,17 +73,12 @@ def test_naive():
     try:
         # Parse request JSON
         data = request.json
-        haystack = data.get('haystack', '')
-        needle = data.get('needle', '')
-        injection_depth = data.get('injection_depth', 50)
+        document = data.get('document', '')
         query = data.get('query', '')
         
         # Validate inputs
-        if not haystack or not needle or not query:
+        if not document or not query:
             return jsonify({"error": "Missing required fields"}), 400
-        
-        # Inject needle into haystack
-        document = inject_needle(haystack, needle, injection_depth)
         
         # Count tokens in full document
         tokens = count_tokens(document)
@@ -109,9 +102,7 @@ def test_optimized():
     Test Optimized RAG approach with Signal-Core processed document.
     
     Request JSON:
-        - haystack: The full document text
-        - needle: The fact to inject
-        - injection_depth: Percentage (0-100) where to inject needle
+        - document: The full document text
         - query: The question to ask the LLM
     
     Response JSON:
@@ -123,17 +114,12 @@ def test_optimized():
     try:
         # Parse request JSON
         data = request.json
-        haystack = data.get('haystack', '')
-        needle = data.get('needle', '')
-        injection_depth = data.get('injection_depth', 50)
+        document = data.get('document', '')
         query = data.get('query', '')
         
         # Validate inputs
-        if not haystack or not needle or not query:
+        if not document or not query:
             return jsonify({"error": "Missing required fields"}), 400
-        
-        # Inject needle into haystack
-        document = inject_needle(haystack, needle, injection_depth)
         
         # Process document through Signal-Core pipeline
         optimized_context, metrics = pipeline.process(document)

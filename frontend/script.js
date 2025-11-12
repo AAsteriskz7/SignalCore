@@ -2,9 +2,7 @@
 const API_BASE = 'http://localhost:5000';
 
 // Get DOM elements
-const haystackInput = document.getElementById('haystack');
-const needleInput = document.getElementById('needle');
-const depthInput = document.getElementById('depth');
+const documentInput = document.getElementById('document');
 const queryInput = document.getElementById('query');
 const btnNaive = document.getElementById('btn-naive');
 const btnOptimized = document.getElementById('btn-optimized');
@@ -23,28 +21,16 @@ function hideLoading() {
 
 // Input validation
 function validateInputs() {
-    const haystack = haystackInput.value.trim();
-    const needle = needleInput.value.trim();
-    const depth = depthInput.value.trim();
+    const document = documentInput.value.trim();
     const query = queryInput.value.trim();
 
-    if (!haystack) {
-        alert('Please enter a haystack document');
-        return false;
-    }
-
-    if (!needle) {
-        alert('Please enter a needle');
-        return false;
-    }
-
-    if (!depth || depth < 0 || depth > 100) {
-        alert('Please enter a valid injection depth (0-100)');
+    if (!document) {
+        alert('Please enter a document');
         return false;
     }
 
     if (!query) {
-        alert('Please enter a query');
+        alert('Please enter a question');
         return false;
     }
 
@@ -57,12 +43,13 @@ function displayNaiveResult(data) {
     
     resultContent.innerHTML = `
         <div class="response">
-            <h3>LLM Response:</h3>
+            <h3>Answer:</h3>
             <p>${escapeHtml(data.response)}</p>
         </div>
         <div class="metrics">
-            <h3>Metrics:</h3>
-            <p><strong>Total Tokens:</strong> ${data.tokens.toLocaleString()}</p>
+            <h3>Cost:</h3>
+            <p><strong>Tokens Used:</strong> ${data.tokens.toLocaleString()}</p>
+            <p class="note">Using the full document without optimization</p>
         </div>
     `;
 }
@@ -71,16 +58,19 @@ function displayNaiveResult(data) {
 function displayOptimizedResult(data) {
     const resultContent = optimizedResultDiv.querySelector('.result-content');
     
+    const savings = ((data.original_tokens - data.optimized_tokens) / data.original_tokens * 100).toFixed(1);
+    
     resultContent.innerHTML = `
         <div class="response">
-            <h3>LLM Response:</h3>
+            <h3>Answer:</h3>
             <p>${escapeHtml(data.response)}</p>
         </div>
         <div class="metrics">
-            <h3>Metrics:</h3>
-            <p><strong>Original Tokens:</strong> ${data.original_tokens.toLocaleString()}</p>
-            <p><strong>Optimized Tokens:</strong> ${data.optimized_tokens.toLocaleString()}</p>
-            <p><strong>Reduction:</strong> ${data.reduction_percentage.toFixed(1)}%</p>
+            <h3>Cost Savings:</h3>
+            <p><strong>Original:</strong> ${data.original_tokens.toLocaleString()} tokens</p>
+            <p><strong>Optimized:</strong> ${data.optimized_tokens.toLocaleString()} tokens</p>
+            <p class="savings"><strong>Saved ${savings}% in AI costs!</strong></p>
+            <p class="note">Signal-Core filtered out redundant content while preserving the answer</p>
         </div>
     `;
 }
@@ -107,9 +97,7 @@ async function testNaive() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                haystack: haystackInput.value,
-                needle: needleInput.value,
-                injection_depth: parseInt(depthInput.value),
+                document: documentInput.value,
                 query: queryInput.value
             })
         });
@@ -121,7 +109,7 @@ async function testNaive() {
         const data = await response.json();
         displayNaiveResult(data);
     } catch (error) {
-        console.error('Error testing naive RAG:', error);
+        console.error('Error querying full document:', error);
         const resultContent = naiveResultDiv.querySelector('.result-content');
         resultContent.innerHTML = `
             <div class="error">
@@ -148,9 +136,7 @@ async function testOptimized() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                haystack: haystackInput.value,
-                needle: needleInput.value,
-                injection_depth: parseInt(depthInput.value),
+                document: documentInput.value,
                 query: queryInput.value
             })
         });
@@ -162,7 +148,7 @@ async function testOptimized() {
         const data = await response.json();
         displayOptimizedResult(data);
     } catch (error) {
-        console.error('Error testing optimized RAG:', error);
+        console.error('Error querying optimized document:', error);
         const resultContent = optimizedResultDiv.querySelector('.result-content');
         resultContent.innerHTML = `
             <div class="error">
@@ -177,10 +163,3 @@ async function testOptimized() {
 // Add event listeners
 btnNaive.addEventListener('click', testNaive);
 btnOptimized.addEventListener('click', testOptimized);
-
-// Clamp depth input to 0-100 range
-depthInput.addEventListener('input', function() {
-    const value = parseInt(this.value);
-    if (value < 0) this.value = 0;
-    if (value > 100) this.value = 100;
-});
