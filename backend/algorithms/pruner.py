@@ -23,7 +23,7 @@ class SentencePruner:
     """
     
     # Hard-coded parameter for MVP
-    EXTRACTION_RATIO = 0.60  # Keep top 60% of sentences
+    EXTRACTION_RATIO = 0.40  # Keep top 40% of sentences (more aggressive = higher savings)
     
     def prune(self, chunk: str) -> str:
         """
