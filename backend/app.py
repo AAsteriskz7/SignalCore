@@ -8,6 +8,17 @@ It exposes two endpoints:
 """
 
 import os
+import sys
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Add project root to Python path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+# Load environment variables from .env file
+load_dotenv(project_root / '.env')
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from backend.pipeline import SignalCorePipeline

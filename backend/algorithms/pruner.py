@@ -23,7 +23,7 @@ class SentencePruner:
     """
     
     # Hard-coded parameter for MVP
-    EXTRACTION_RATIO = 0.6  # Keep top 60% of sentences
+    EXTRACTION_RATIO = 0.60  # Keep top 60% of sentences
     
     def prune(self, chunk: str) -> str:
         """
@@ -48,12 +48,22 @@ class SentencePruner:
         # Step 2: Calculate chunk centroid (word frequency for entire chunk)
         centroid = self._calculate_centroid(chunk)
         
-        # Step 3: Score each sentence by similarity to centroid
+        # Step 3: Score each sentence by similarity to centroid + uniqueness bonus
         sentence_scores = []
         for idx, sentence in enumerate(sentences):
             sentence_vector = self._calculate_word_frequency(sentence)
-            score = self._cosine_similarity(sentence_vector, centroid)
-            sentence_scores.append((idx, sentence, score))
+            
+            # Base score: similarity to centroid
+            similarity_score = self._cosine_similarity(sentence_vector, centroid)
+            
+            # Uniqueness bonus: boost sentences with rare/unique words
+            uniqueness_score = self._calculate_uniqueness(sentence_vector, centroid)
+            
+            # Combined score: Use uniqueness only for now
+            # This preserves sentences with unique information (like the needle)
+            combined_score = uniqueness_score
+            
+            sentence_scores.append((idx, sentence, combined_score))
         
         # Step 4: Extract top sentences by score
         num_sentences_to_keep = max(1, int(len(sentences) * self.EXTRACTION_RATIO))
@@ -151,3 +161,40 @@ class SentencePruner:
             return 0.0
         
         return numerator / denominator
+    
+    def _calculate_uniqueness(self, sentence_vector: Counter, centroid: Counter) -> float:
+        """
+        Calculate uniqueness score for a sentence based on rare words.
+        
+        Sentences with words that appear infrequently in the chunk get higher scores.
+        This helps preserve sentences with unique information (like the needle).
+        
+        Args:
+            sentence_vector: Word frequency vector for the sentence
+            centroid: Word frequency vector for the entire chunk
+            
+        Returns:
+            Uniqueness score (0.0 to 1.0)
+        """
+        if not sentence_vector:
+            return 0.0
+        
+        # Calculate inverse document frequency for each word in the sentence
+        uniqueness_scores = []
+        for word in sentence_vector.keys():
+            # Words that appear rarely in the chunk get higher scores
+            chunk_frequency = centroid.get(word, 0)
+            if chunk_frequency > 0:
+                # Inverse frequency: rare words get higher scores
+                # Use a stronger penalty for common words
+                idf = 1.0 / (chunk_frequency ** 0.5)
+                uniqueness_scores.append(idf)
+            else:
+                # Word not in chunk (shouldn't happen, but handle it)
+                uniqueness_scores.append(1.0)
+        
+        # Sort scores and take average of top 3 most unique words
+        # This balances between max (too aggressive) and average (too diluted)
+        uniqueness_scores.sort(reverse=True)
+        top_scores = uniqueness_scores[:min(3, len(uniqueness_scores))]
+        return sum(top_scores) / len(top_scores) if top_scores else 0.0
