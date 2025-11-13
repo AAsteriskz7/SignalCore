@@ -1,5 +1,5 @@
 """
-Sentence-Level Pruner - Stage 2 of Signal-Core Pipeline
+Sentence-Level Pruner - Stage 2 of SignalCore Pipeline
 
 This module implements a centroid-based sentence pruning algorithm that
 extracts the most important sentences from each chunk by ranking them

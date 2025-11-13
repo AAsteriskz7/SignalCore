@@ -1,5 +1,5 @@
 """
-LLM API Client for Signal-Core
+LLM API Client for SignalCore
 
 This module provides integration with Google Gemini API for querying
 the LLM with context and questions.

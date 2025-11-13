@@ -15,7 +15,7 @@ with open('test_data/haystack.txt', 'r', encoding='utf-8') as f:
 query = "What is machine learning?"
 
 print("=" * 80)
-print("SIGNAL-CORE DEMO TEST (No Needle)")
+print("SignalCore DEMO TEST")
 print("=" * 80)
 print(f"\nDocument size: {len(document.split())} words")
 print(f"Query: {query}")

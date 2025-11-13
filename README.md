@@ -1,16 +1,16 @@
-# Signal-Core
+# SignalCore
 
-**Smart AI Cost Reduction**: Cut LLM token usage by ~38% while maintaining answer quality.
+**Smart AI Cost Reduction**: Cut LLM token usage by ~69% while maintaining answer quality.
 
-Signal-Core is a two-stage pipeline that intelligently filters out redundant content from long documents. It reads your document, removes the "fluff" and repetitive sentences, and produces a shorter, "high-signal" version - getting you the same quality answers while using significantly fewer tokens.
+SignalCore is a two-stage pipeline that intelligently filters out redundant content from long documents. It reads your document, removes the "fluff" and repetitive sentences, and produces a shorter, "high-signal" version - getting you the same quality answers while using significantly fewer tokens.
 
 ## What It Does
 
-When you feed a long document to an LLM, you're paying for every token - including redundant sentences, repetitive explanations, and low-value content. Signal-Core solves this by:
+When you feed a long document to an LLM, you're paying for every token - including redundant sentences, repetitive explanations, and low-value content. SignalCore solves this by:
 
 1. **Semantic Chunking**: Splits documents at optimal sentence boundaries
 2. **Smart Filtering**: Removes redundant sentences while preserving key information  
-3. **Cost Savings**: Reduces tokens by ~38% on average
+3. **Cost Savings**: Reduces tokens by ~69% on average
 
 **Result**: Same quality answers, lower AI costs.
 
@@ -18,8 +18,8 @@ When you feed a long document to an LLM, you're paying for every token - includi
 
 Using a 10,000-word technical document:
 - **Full Document**: 13,398 tokens → Answer: ✓ Correct
-- **Optimized Document**: 8,213 tokens → Answer: ✓ Correct  
-- **Savings**: 38.7% reduction in AI costs
+- **Optimized Document**: 4,104 tokens → Answer: ✓ Correct  
+- **Savings**: 69.4% reduction in AI costs
 
 ## Setup Instructions
 
@@ -79,7 +79,7 @@ python backend/app.py
 - Paste a long document (e.g., a Wikipedia article, research paper, or technical documentation)
 - Enter a question about the content
 - Click "Query Full Document" to see the baseline
-- Click "Query Optimized Document" to see Signal-Core in action
+- Click "Query Optimized Document" to see SignalCore in action
 - Compare the answers and token savings!
 
 ### Quick Test
@@ -114,12 +114,12 @@ SignalCore/
 
 ## How It Works
 
-Signal-Core uses a two-stage pipeline:
+SignalCore uses a two-stage pipeline:
 
 1. **Stage 1: Semantic Chunker** - Splits documents at optimal sentence boundaries (200-1000 words per chunk)
 2. **Stage 2: Sentence-Level Pruner** - Extracts high-signal sentences using centroid-based ranking with uniqueness scoring
 
-The pruner keeps the most important sentences (those most relevant to the document's main topics and containing unique information) while filtering out redundant content. This maintains answer quality while reducing token costs.
+The pruner keeps the most important sentences (those most relevant to the document's main topics and containing unique information) while filtering out redundant content. This maintains answer quality while reducing token costs by ~69%.
 
 ## License
 

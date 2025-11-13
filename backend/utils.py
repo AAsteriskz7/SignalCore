@@ -1,5 +1,5 @@
 """
-Utility functions for Signal-Core pipeline.
+Utility functions for SignalCore pipeline.
 """
 
 def inject_needle(haystack: str, needle: str, depth_percentage: int) -> str:

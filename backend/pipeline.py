@@ -1,5 +1,5 @@
 """
-Signal-Core Pipeline - Orchestrates the two-stage optimization process
+SignalCore Pipeline - Orchestrates the two-stage optimization process
 
 This module combines the Semantic Chunker (Stage 1) and Sentence-Level Pruner
 (Stage 2) to create an optimized context for LLM consumption. It also calculates

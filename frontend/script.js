@@ -70,7 +70,7 @@ function displayOptimizedResult(data) {
             <p><strong>Original:</strong> ${data.original_tokens.toLocaleString()} tokens</p>
             <p><strong>Optimized:</strong> ${data.optimized_tokens.toLocaleString()} tokens</p>
             <p class="savings"><strong>Saved ${savings}% in AI costs!</strong></p>
-            <p class="note">Signal-Core filtered out redundant content while preserving the answer</p>
+            <p class="note">SignalCore filtered out redundant content while preserving the answer</p>
         </div>
     `;
 }

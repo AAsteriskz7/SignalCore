@@ -1,10 +1,10 @@
 """
-Signal-Core Flask API Server
+SignalCore Flask API Server
 
-This module provides HTTP endpoints for the Signal-Core demo UI.
+This module provides HTTP endpoints for the SignalCore demo UI.
 It exposes two endpoints:
 - /api/test-naive: Tests LLM with full unprocessed document
-- /api/test-optimized: Tests LLM with Signal-Core optimized document
+- /api/test-optimized: Tests LLM with SignalCore optimized document
 """
 
 import os
@@ -30,7 +30,7 @@ from backend.llm_client import LLMClient
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend communication
 
-# Initialize Signal-Core components
+# Initialize SignalCore components
 pipeline = SignalCorePipeline()
 
 # Load API key from environment and initialize LLM client
@@ -99,7 +99,7 @@ def test_naive():
 @app.route('/api/test-optimized', methods=['POST'])
 def test_optimized():
     """
-    Test Optimized RAG approach with Signal-Core processed document.
+    Test Optimized RAG approach with SignalCore processed document.
     
     Request JSON:
         - document: The full document text
@@ -121,7 +121,7 @@ def test_optimized():
         if not document or not query:
             return jsonify({"error": "Missing required fields"}), 400
         
-        # Process document through Signal-Core pipeline
+        # Process document through SignalCore pipeline
         optimized_context, metrics = pipeline.process(document)
         
         # Query LLM with optimized context

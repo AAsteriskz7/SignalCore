@@ -1,5 +1,5 @@
 """
-Semantic Chunker - Stage 1 of Signal-Core Pipeline
+Semantic Chunker - Stage 1 of SignalCore Pipeline
 
 This module implements a simple sentence-boundary based chunking algorithm
 that splits documents into semantically coherent chunks while respecting
